@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}App Research And Developpement{% endblock %}
+
+{% block body %}
+<div class="container">
+
+    <div class=" d-flex justify-content-between align-items-center pr-2">
+        <h3 class="mt-2">Bienvenue {{app.user.fullname |default("Guest")}}</h3>
+         
+         {% if app.user %}
+        <div class="dashboard-bar-info  row">
+            <p class="col pl-4">Inscrit le : {{app.user.createdAt| date('d-m-y') |default("NA")}} </p>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if is_granted('ROLE_SUPER_USER') %}
+            <p>Vous etes connecté en tant que Super Utilisateur</p>
+    {% endif %}
+
+    <section class="mt-5">
+    
+
+        <div  class="row d-flex justify-content-between mt-4 home-card">
+        
+        <article class="card-item col-3 ">
+            <h3>{{ is_granted('ROLE_SUPER_USER') ? 'Total Projects' : 'Mes Projects'}} <span class="font--light">| En cours</h3>
+            <div class="content d-flex justify-content-around">
+              {% if is_granted('ROLE_SUPER_USER') %}
+                 <p>{{inprogress |default('0')}}</p>
+              {% elseif is_granted('ROLE_USER') %}
+                 <p>{{myProjectIP |default('0')}}</p>
+              {% else %}
+               <p>0</p>
+              {% endif %}
+                <img class="color-sub-primary"src="../img/progress-report.png" alt="icone">
+            </div>
+        </article>
+
+          <article class="card-item col-3 ">
+            <h3>{{ is_granted('ROLE_SUPER_USER') ? 'Total Projects' : 'Mes Projects'}} <span class="font--light">| A venir</h3>
+            <div class="content d-flex justify-content-around">
+                   {% if is_granted('ROLE_SUPER_USER') %}
+                    <p>{{forecast |default('0')}}</p>
+                    {% elseif is_granted('ROLE_USER') %}
+                        <p>{{myProjectForcast |default('0')}}</p>
+                    {% else %}
+                    <p>0</p>
+                    {% endif %}
+          
+                <img class="color-sub-primary"src="../img/schedule.png" alt="icone">
+            </div>
+        </article>
+
+          <article class="card-item col-3 ">
+            <h3>{{ is_granted('ROLE_SUPER_USER') ? 'Total Projects' : 'Mes Projects'}} <span class="font--light">| Terminé</h3>
+            <div class="content d-flex justify-content-around">
+                  {% if is_granted('ROLE_SUPER_USER') %}
+                    <p>{{finished |default('0')}}</p>
+                    {% elseif is_granted('ROLE_USER') %}
+                        <p>{{myProjectOver | default('0')}}</p>
+                    {% else %}
+                    <p>0</p>
+                    {% endif %}
+          
+                <img class="color-sub-primary"src="../img/finished.png" alt="icone">
+            </div>
+        </article>
+
+        </div>
+    </section>
+
+    
+    {% if is_granted('ROLE_USER') %}
+    <section class="block-info row justify-content-between mt-5">
+
+        <article class="block-item col-6">
+            <div class="block-grid">
+                <div class="grid-header">
+                    <h3>Statistiques</h3>
+                    <p>List item</p>
+                </div>
+                <div class="row">
+                
+                    {# <p>Dernier Project ajouté : <span class="p-bold">{{lastProject.subject |default('aucun')}}</span> </p>
+                    <p>Total Projets: {{allProjects | length}}</p>
+                    <p>Total Formule :  </p> #}
+                         
+                    <p class="col-8">Mon Dernier Projet Ajouté : </p>
+                     <p class="col-4 text-center">{{lastProject.subject |default('aucun')}}</p> 
+                    <p class="col-8">Mes Projets: </p>
+                    <p class="col-4 text-center">{{myCountProject | length}}</p>
+                    <p class="col-8">Matieres Enregistrés :  </p>
+                    <p class="col-4 text-center">{{totalMaterial | length}}</p>
+                </div>
+
+
+
+            </div>
+        </article>
+
+        <article class="block-item col-4">
+        <!--  Permet d'avoir la valeur rendu a twig et exploitable par Javascript -->
+            <div class="js-tab-value" data-abs="{{ tabCountStatus }}"> </div>
+           
+             <div class="block-grid">
+                <div class="grid-header">
+                    <h3>Repartition Projets</h3>
+                    <p>par avancement</p>
+                </div>
+                <canvas id="categories" > </canvas>
+              
+            </div>
+        </article>
+    
+    </section>
+    {% endif %}
+
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.js"></script>
+        <script src="{{ asset('/js/graph.js') }}"></script>
+
+{% endblock %}

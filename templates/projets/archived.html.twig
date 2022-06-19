@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Section Archive{% endblock %}
+
+{% block body %}
+<div class="container">
+
+      {# FIL ARIANE#}
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="\">Home</a></li>
+             <li class="breadcrumb-item"><a href="{{ path('app_projets')}}">Projects</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Archives</li>
+            
+          </ol>
+        </nav>
+
+
+
+        <h1 class="title1--position">Liste des Projets Archivés</h1>
+
+
+        <table class="table table-hover text-center mt-4">
+            <thead>
+              <tr >
+               <th scope="col">ID</th>
+                <th scope="col">subject</th>
+                <th scope="col">Nb d'essai</th>
+                <th scope="col">Créé le</th>
+                <th scope="col">Archivé le </th>
+                <th scope="col">Durée</th>
+                 <th scope="col">Status</th>
+                <th scope="col">Action</th>
+
+              </tr>
+            </thead>
+            <tbody>
+
+                {% for project in projects %}
+                
+                  <tr class="table-primary align-middle">
+                  <th scope="row">{{project.id}}</th>
+                    <td>{{project.subject}}</td>
+                    <td>{{project.testingNumber}}</td>
+                    <td>{{project.createdAt | date('d-m-Y à H:i:s')}}</td>
+                    <td>{{project.updatedAt | date('d-m-Y à H:i:s' )}}</td>
+                    <td>{{project.timeForcast }}</td>
+                     <td>{{project.status }}</td>
+
+                    <td>
+                        <a href="{{ path('app_edit_projets', {'id': project.id}) }}" class="btn btn-info">Voir</a>                
+                    </td>
+                 </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+
+
+
+</div
+
+{% endblock %}

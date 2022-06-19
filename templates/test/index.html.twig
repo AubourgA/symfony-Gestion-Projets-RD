@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TestController!{% endblock %}
+
+{% block body %}
+
+<div class="container">
+     {# FIL ARIANE#}
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="\">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Tests</li>
+            
+          </ol>
+        </nav>
+
+        {# MESSAGE D'ALERTE#}
+        {%  for message in app.flashes('success') %}
+          <div class="alert alert-success mt-4">
+            {{message}}
+          </div>
+        {% endfor %}
+
+        <h1 class="title1--position">Liste des Tests Disponibles</h1>
+
+        <a href="{{ path('app_new_test')}}" class="btn btn-primary mt-4"><i class="fa-solid fa-circle-plus"></i> New Test</a>
+
+        <table class="table table-hover text-center mt-4">
+            <thead>
+              <tr>
+               <th scope="col">ID</th>
+                <th scope="col">Critere</th>
+                <th scope="col">Precision</th>
+                  <th scope="col">Echeance</th>
+                <th scope="col">Unite</th>
+                <th scope="col">Ajouté le</th>
+                <th scope="col">Action</th>
+
+              </tr>
+            </thead>
+            <tbody>
+
+                 {% for test in tests %}
+                
+                  <tr class="table-primary align-middle">
+                  <th scope="row ">{{test.id}}</th>
+                    <td>{{test.critere}}</td>
+                    <td>{{test.pres}}</td>
+                     <td>{{test.duedate}}</td>
+                    <td>{{test.unit}}</td>
+                    <td>{{test.createdAt | date('d-m-Y à H:i:s')}}</td>
+                    <td>
+                        {# <a href="{{ path('app_edit_test', {'id': test.id}) }}" class="btn btn-info">Edit</a> #}
+                        <button  data-id={{test.id}} data-path ="/test/delete" class="btn btn-danger cta" data-bs-dismiss="modal"><i class="fa-solid fa-trash-can"></i> Delete</button>
+
+                    </td>
+                 </tr>
+                {% endfor %} 
+
+            </tbody>
+
+        </table>
+
+{% endblock %}

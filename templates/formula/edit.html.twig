@@ -1,0 +1,206 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello FormulaController!{% endblock %}
+
+{% block body %}
+    <div class="container">
+    
+        {# FIL ARIANE#}
+            <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="\">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_projets')}}">Projects</a></li>
+                <li class="breadcrumb-item"><a href ="{{ path('app_formula', {'id': f.projects.id }) }}">Essais</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Details</li>
+                
+            </ol>
+            </nav>
+
+            {# MESSAGE D'ALERTE#}
+            {%  for message in app.flashes('success') %}
+            <div class="alert alert-success mt-4">
+                {{message}}
+            </div>
+            {% endfor %}
+
+
+    <div class="row justify-content-between mt-4">
+        <section class="box-wrapper col-3">
+            <div class="box-header d-flex justify-content-between align-items-center">
+                <h2>Project  <span class="font--black">| {{f.projects.status}}</span> </h2>
+                <p><i class="fa-solid fa-diagram-project"></i></p>
+            </div>
+            <div class="box-content">
+            <p class="size--sm pad--hb">{{f.projects.subject  }} </p>
+            <div class="d-flex justify-content-between">
+                <p><i class="fa-solid fa-calendar-days"></i> {{ f.projects.createdAt|date('d-m-Y')}}</p>
+                <p><i class="fa-solid fa-arrow-rotate-left"></i> {{ f.projects.updatedAt|date('d-m-Y')}}</p>
+            </div>
+            </div>
+        </section>
+
+           <section class="box-wrapper col-3">
+            <div class="box-header d-flex justify-content-between align-items-center">
+                <h2>Formule ID  <span class="font--black">| {{f.id }}</span> </h2>
+               <i class="fa-solid fa-list"></i>
+            </div>
+            <div class="box-content">
+            <p class="size--sm pad--hb">{{f.subject}} </p>
+            <p><i class="fa-solid fa-calendar-days"></i> {{f.createdAt | date('d-m-Y') }}</p>
+            </div>
+        </section>
+         
+            <section class="box-wrapper col-3">
+            <div class="box-header d-flex justify-content-between align-items-center">
+                <h2>Infos  <span class="font--black">| PRI</span> </h2>
+                <p><i class="fa-solid fa-circle-info"></i></p>
+            </div>
+            <div class="box-content">
+            <p class="size--sm pad--hb">Total Formule :  <span > {{ SumPrice |number_format(2,'.',',') }} € </span> </p>
+             <p ><i class="fa-solid fa-coins"></i> 1 Kg : <span > {{ pricePerKg |number_format(2,'.',',') }} € </span></p>
+            </div>
+        </section>
+         
+         
+    
+       <section class="col-6 mt-5">
+       <h4>Formulation</h4>
+               
+        <table class="table table-hover">
+            <thead>
+                <tr class="table-warning">
+                    <th scope="col">Designation</th>
+                    <th scope="col">Quantite</th>
+                    <th scope="col">Unit</th>
+                    <th scope="col">Price €</th>
+                    <th scope="col">Unit</th>
+                     <th scope="col">€ / qtite</th>
+                      <th scope="col">% / Prix</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for matForm in matForms %}
+
+                   <tr class="table-light">
+                    <th scope="row">{{ matForm.idmaterial.name}}</th>
+                    <td> {{ matForm.quantity}}</td>
+                    <td>{{ matForm.unit}}</td>
+                    <td> {{ matForm.idmaterial.price}}</td>
+                     <td> {{ matForm.idmaterial.unit}}</td>
+                     <td> {{ (matForm.idmaterial.price * matForm.quantity) / 1000 }}</td> 
+                      <td> {{ (((matForm.idmaterial.price * matForm.quantity) / 1000 ) / SumPrice * 100) |number_format(2,'.',',') }}</td>       
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>TOTAL</td>
+                <td>{{ SumQtite }}</td>
+                <td></td>
+                <td></td>
+               <td></td>
+               <td></td>
+                <td>100</td>
+            </tr>
+            </tbody>
+            </table>
+        </section>
+
+        <section class="col-4 mt-5">
+            <h4>Protocole</h4>
+            <div class="form-group text-left">
+                    <textarea name="protcole" id="protocole" cols="57" rows="10" class="form-control ">
+                        {{ f.comment}}
+                     </textarea>
+            </div>
+        </section>
+   
+
+        <section class="col-6 mt-5">
+        <h4>Resultats des Mesures</h4>
+            <table class="table table-hover">
+            <thead>
+                <tr class="table-warning">
+                    <th scope="col">id</th>
+                    <th scope="col">Critere</th>
+                    <th scope="col">Presision</th>
+                    <th scope="col">echeance/timing</th>
+                    <th scope="col">Valeur</th>
+                    <th scope="col">Unit</th>
+                   
+                </tr>
+            </thead>
+            <tbody>
+              {% for getResult in getResults %}
+
+                <tr class="table-light">
+                        <th scope="row">{{ getResult.id}}</th>
+                        <td> {{ getResult.tests}}</td>
+                        <td>{{ getResult.tests.pres}}</td>
+                        <td>{{ getResult.tests.duedate}}</td>
+                        <td> {{ getResult.value}}</td>
+                        <td> {{ getResult.tests.unit}}</td>
+                        
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+        </section>
+
+          <section class="col-4 mt-5">
+            <h4 class="mb-5">Criteres d'evaluation</h4>
+
+                 {{form_start(formRes)}}
+                 <div class="row">
+                   <div class="form-group col-6">
+                        {{ form_widget(formRes.tests)}}
+                        <div class="form-error">
+                           {{ form_errors(formRes.tests)}}
+                        </div>
+                    </div>
+                   
+
+                     <div class="form-group col-3">
+                      
+                        {{ form_widget(formRes.value)}}
+                        <div class="form-error">
+                          {{ form_errors(formRes.value)}}
+                        </div>
+                    </div>
+                 
+                 </div>
+                 {{form_end(formRes)}}
+        </section>
+
+
+        <section class="col-6 my-5">
+        <h4>Ajout Image</h4>
+   
+        </section>
+
+        <section class="col-12 my-5">
+        <h4>Interpretation / Commentaires</h4>
+
+         {{form_start(formComment)}}
+               <div class="form-group">
+                
+                        {{ form_widget(formComment.commentaires)}}
+                        <div class="form-error">
+                        {{ form_errors(formComment.commentaires)}}
+                        </div>
+               </div>
+
+               {{ form_row(formComment.submit) }}
+         {# Ajouter ligne token car sinon le formulaire ne s'envoie pas #}
+         {{ form_row(formComment._token) }} 
+
+         {# permet de ne pas afficer le reste du formualire - ici pb afficahge #}
+          {{ form_end(formComment, {'render_rest': false}) }} 
+
+        
+
+        </section>
+    </div>
+
+
+ </div>
+
+{% endblock %}

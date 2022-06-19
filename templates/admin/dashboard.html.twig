@@ -1,0 +1,67 @@
+{# {% extends "@EasyAdmin/page/content.html.twig" %} #}
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+ {% block content %}
+        <article class="content">
+            {% block content_header_wrapper %}
+                {% set has_help_message = (ea.crud.helpMessage ?? '') is not empty %}
+                <section class="content-header">
+                    {% block content_header %}
+                        <div class="content-header-title">
+                            <h1 class="title">
+                                {% block content_title %}Bienvenue {{app.user.fullname}}{% endblock %}         
+                            </h1>
+                        </div>
+
+                        {% block page_actions_wrapper %}
+                            <div class="page-actions">{% block page_actions %}{% endblock %}</div>
+                        {% endblock %}
+                    {% endblock content_header %}
+                </section>
+            {% endblock content_header_wrapper %}
+
+            <section id="main" class="content-body d-flex ">
+                {% block main %}
+                    
+                        <article class="card border-secondary mx-3 mb-3" style="max-width: 20rem;">
+                            <div class="card-header">Utilisateurs</div>
+                            <div class="card-body">
+                                <h4 class="card-title">Comptes Utilisateurs</h4>
+                                <div class="row">
+                                    <p class="col-8">Actif : </p>
+                                    <p class="col-4">{{countValidUser}}</p>
+                                    <p class="col-8">Desactive : </p>
+                                    <p class="col-4">{{countDesactiveUser}}</p>
+                                    <p class="col-8">Total : </p>
+                                    {# <p class="col-4">{{countUser}}</p> #}
+                                     <p class="col-4">{{countValidUser + countDesactiveUser}}</p>
+                                </div>
+                            </div>
+                        </article>
+                    
+                    
+                        <article class="card border-secondary mb-3" style="max-width: 20rem;">
+                            <div class="card-header">Espace server</div>
+                            <div class="card-body">
+                                <h4 class="card-title">Base de Données</h4>
+                                 {{ render(controller(
+                                     'App\\Controller\\Admin\\AdminRequestController::sizeBase' ))
+                                 }}
+                            
+                            </div>
+                        </article>
+                   
+                
+                {% endblock %}
+            </section>
+
+            {% block content_footer_wrapper %}
+                {% set content_footer = block('content_footer') is defined ? block('content_footer') : '' %}
+                {% if content_footer is not empty %}
+                    <section class="content-footer">
+                        {{ content_footer }}
+                    </section>
+                {% endif %}
+            {% endblock %}
+        </article>
+{% endblock content %}

@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MaterialsController!{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+      {# FIL ARIANE#}
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="\">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Materials</li>
+            
+          </ol>
+        </nav>
+
+        {# MESSAGE D'ALERTE#}
+        {%  for message in app.flashes('success') %}
+          <div class="alert alert-success mt-4">
+            {{message}}
+          </div>
+        {% endfor %}
+
+
+        <h1 class="title1--position">Liste des Matieres Premieres</h1>
+
+        <a href="{{ path('app_new_materials')}}" class="btn btn-primary mt-4"><i class="fa-solid fa-circle-plus"></i> New Material</a>
+         
+
+
+        <table class="table table-hover text-center mt-4">
+            <thead>
+              <tr>
+               <th scope="col">ID</th>
+                <th scope="col">Desingation</th>
+                <th scope="col">Fournisseur</th>
+                <th scope="col">Prix €</th>
+                <th scope="col">Unité</th>
+                <th scope="col">Ajouté le</th>
+                <th scope="col">Action</th>
+
+              </tr>
+            </thead>
+            <tbody>
+
+                {% for material in materials %}
+                
+                  <tr class="table-primary align-middle">
+                  <th scope="row ">{{material.id}}</th>
+                    <td>{{material.name}}</td>
+                    <td>{{material.vendor}}</td>
+                    <td>{{material.price}}</td>
+                    <td>{{material.unit}}</td>
+                    <td>{{material.createdAt | date('d-m-Y à H:i:s')}}</td>
+                    <td>
+                        <a href="{{ path('app_edit_materials', {'id': material.id}) }}" class="btn btn-info"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+                        <button  data-id={{material.id}} data-path ="/materials/delete" class="btn btn-danger cta" data-bs-dismiss="modal"><i class="fa-solid fa-trash-can"></i> Delete</button>
+
+                    </td>
+                 </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+           {# paginator#}
+        <div class="navigation d-flex justify-content-center">
+        {{ knp_pagination_render(materials) }}
+        </div>
+
+        {# MODAL DE CONFIRMATION SUPPRESSION #}
+        <div class="alert-modal">
+>         
+          <div class="overlay"></div>
+          <div class="item-modal">
+              <div class="modal-header">
+                <h5> SUPPRESSION D UN ELEMENT</h5>
+              </div>
+              
+              <div class="modal-body">
+                <p>Vous etes sur le point de supprimer une donnée.</p>
+                <p>Etes vous sur ?</p>
+              </div>
+              
+              <div class="modal-footer">
+                <a href="{/}" class="btn btn-success btn-valid"><i class="fa-solid fa-check"></i>  Valider</a>
+                <button class="btn btn-danger btn-cancel"><i class="fa-solid fa-xmark"></i>  ANNULER</button>
+           
+              </div>
+          </div>
+        </div>
+
+
+
+
+</div
+   {% block javascripts %}
+      {{ parent() }}
+       <script src="../js/modal.js"></script>
+     
+   {% endblock %}
+
+{% endblock %}
+
+

@@ -1,0 +1,132 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProjetsController!{% endblock %}
+
+{% block body %}
+<div class="container">
+
+      {# FIL ARIANE#}
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="\">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Projects</li>
+            
+          </ol>
+        </nav>
+
+        {# MESSAGE D'ALERTE#}
+        {%  for message in app.flashes('success') %}
+          <div class="alert alert-success mt-4">
+            {{message}}
+          </div>
+        {% endfor %}
+
+
+        <h1 class="title1--position">Liste des Projets</h1>
+
+        <a href="{{ path('app_new_projets')}}" class="btn btn-primary mt-4"><i class="fa-solid fa-circle-plus"></i> New Project</a>
+        <a href="{{ path('app_archived_projets')}}" class="btn btn-secondary mt-4">Projets Archivés</a>
+      
+      
+
+        <table class="table table-hover text-center mt-4">
+            <thead>
+              <tr >
+               <th scope="col">ID</th>
+                <th scope="col">subject</th>
+                <th scope="col">Nb d'essai</th>
+                <th scope="col">Créé le</th>
+                <th scope="col">Mise a jour le </th>
+                <th scope="col">Durée Estimée</th>
+                 <th scope="col">Status</th>
+                  <th scope="col">Crée par</th>
+                  <th scope="col">Public</th>
+
+                <th scope="col">Action</th>
+
+              </tr>
+            </thead>
+            <tbody>
+             {% if is_granted('ROLE_SUPER_USER') %}
+                {% for project in projects %}
+                
+                  <tr class="table-primary align-middle">
+                  <th scope="row">{{project.id}}</th>
+                    <td>{{project.subject}}</td>
+                    <td>{{project.testingNumber}}</td>
+                    <td>{{project.createdAt | date('d-m-Y')}}</td>
+                    <td>{{project.updatedAt | date('d-m-Y' )}}</td>
+                    <td>{{project.timeForcast }}</td>
+                     <td>{{project.status }}</td>
+                      <td>{{project.user.fullname }}</td>
+                       <td >{{project.isVisible ? '✔️' : '❌' }}</td>
+
+                    <td>
+                        <a href="{{ path('app_edit_projets', {'id': project.id}) }}" class="btn btn-info"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+                        {# <a href="{{ path('app_delete_materials', {'id': material.id}) }}" class="btn btn-danger cta" data-bs-dismiss="modal">Delete</a> #}
+                        <button  data-id={{project.id}} data-path ="/projects/desactive" class="btn btn-warning cta" data-bs-dismiss="modal"><i class="fa-solid fa-file-zipper"></i> Archiver</button>
+
+                    </td>
+                 </tr>
+                {% endfor %}
+              
+              {% else %}
+                    {% for projectCustom in projectCustoms %}
+                
+                        <tr class="table-primary align-middle">
+                        <th scope="row">{{projectCustom.id}}</th>
+                          <td>{{projectCustom.subject}}</td>
+                          <td>{{projectCustom.testingNumber}}</td>
+                          <td>{{projectCustom.createdAt | date('d-m-Y')}}</td>
+                          <td>{{projectCustom.updatedAt | date('d-m-Y' )}}</td>
+                          <td>{{projectCustom.timeForcast }}</td>
+                          <td>{{projectCustom.status }}</td>
+                            <td>{{projectCustom.user.fullname }}</td>
+                            <td >{{projectCustom.isVisible ? '✔️' : '❌' }}</td>
+
+                          <td>
+                              <a href="{{ path('app_edit_projets', {'id': projectCustom.id}) }}" class="btn btn-info"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+                              {# <a href="{{ path('app_delete_materials', {'id': material.id}) }}" class="btn btn-danger cta" data-bs-dismiss="modal">Delete</a> #}
+                              <button  data-id={{projectCustom.id}} data-path ="/projects/desactive" class="btn btn-warning cta" data-bs-dismiss="modal"><i class="fa-solid fa-file-zipper"></i> Archiver</button>
+
+                          </td>
+                      </tr>
+                {% endfor %}
+           {% endif %}
+
+
+            </tbody>
+
+        </table>
+
+        {# MODAL DE CONFIRMATION SUPPRESSION #}
+        <div class="alert-modal">
+>         
+          <div class="overlay"></div>
+          <div class="item-modal">
+              <div class="modal-header">
+                <h5> Archiver le projet</h5>
+              </div>
+              
+              <div class="modal-body">
+                <p>Vous etes sur le point de d'archiver le projet entier.</p>
+                <p>Celui si sera accepcible depuis l'interface "ARCHIVE"</p>
+              </div>
+              
+              <div class="modal-footer">
+                <a href="{/}" class="btn btn-success btn-valid"><i class="fa-solid fa-check"></i>  Valider</a>
+                <button class="btn btn-danger btn-cancel"><i class="fa-solid fa-xmark"></i>  ANNULER</button>
+           
+              </div>
+          </div>
+        </div>
+
+
+</div
+ {% block javascripts %}
+      {{ parent() }}
+       <script src="../js/modal.js"></script>
+     
+   {% endblock %}
+
+{% endblock %}

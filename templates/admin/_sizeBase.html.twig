@@ -1,0 +1,13 @@
+
+
+<div class="row">
+    <p class="col-8">Taille de la base (Mo) :</p>
+    <p class="col-4">{{tables[0]['DB_Size']|number_format(2)}} </p>
+    <p class="col-8">Espace server (Mo): </p>
+    <p class="col-4">128</p>
+    <p class="col-8">Occupation du seveur : </p>
+    <p class="col-4">{{(tables[0]['DB_Size'] / 128 * 100)|number_format(2)}} %</p>
+    <p class="col-8">Nombre d'enregistrements :</p>
+    <p class="col-4">{{tables[0]['Total_Tables_Row']}}</p>
+
+</div>

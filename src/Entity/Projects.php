@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
+use DateTimeZone;
 use DateTimeImmutable;
-use App\Repository\ProjectsRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ProjectsRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 
 #[ORM\HasLifecycleCallbacks]
@@ -55,8 +56,8 @@ class Projects
     public function __construct()
     {
         $this->formulas = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable('now', new DateTimeZone('+0200'));
+        $this->updatedAt = new \DateTimeImmutable('now', new DateTimeZone('+0200'));
         $this->active = 0;
        
     }

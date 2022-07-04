@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use DateTimeZone;
 use DateTimeImmutable;
-use App\Repository\FormulasRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\FormulasRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FormulasRepository::class)]
 class Formulas
@@ -37,11 +38,15 @@ class Formulas
     #[ORM\OneToMany(mappedBy: 'formula', targetEntity: Results::class, orphanRemoval: true)]
     private $results;
 
+    #[ORM\OneToMany(mappedBy: 'formula', targetEntity: Images::class, cascade: ["persist"])]
+    private $images;
+
     public function __construct()
     {
         $this->materialFormulas = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable('now', new DateTimeZone('+0200'));
         $this->results = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -155,6 +160,36 @@ class Formulas
             // set the owning side to null (unless already changed)
             if ($result->getFormula() === $this) {
                 $result->setFormula(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Images>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Images $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images[] = $image;
+            $image->setFormula($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Images $image): self
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getFormula() === $this) {
+                $image->setFormula(null);
             }
         }
 

@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\MaterialsRepository;
+use DateTimeZone;
 use DateTimeImmutable;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\MaterialsRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: MaterialsRepository::class)]
@@ -39,7 +40,7 @@ class Materials
     public function __construct()
     {
         $this->materialFormulas = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable('now');
+        $this->createdAt = new \DateTimeImmutable('now', new DateTimeZone('+0200'));
     }
 
     public function getId(): ?int

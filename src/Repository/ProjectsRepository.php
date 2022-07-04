@@ -76,7 +76,7 @@ class ProjectsRepository extends ServiceEntityRepository
         ->setParameter('val1', $val1)
         ->setParameter('val2', $val2)
         ->getQuery()
-        ->getSingleResult();
+        ->getSingleScalarResult();
     }
 
     /**

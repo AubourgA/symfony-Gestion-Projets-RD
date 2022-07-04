@@ -17,8 +17,8 @@
 
         <h1> Modification d'un projet</h1>
           <button  class="add btn btn-outline-primary my-4">Ajout Formule</button>
-          <a href="/projects/{{id}}/formula"  class="see btn btn-outline-primary my-4">Liste Essai</a>
-          <a href="#" class="btn btn-outline-success my-4">Rapport</a>
+          <a href="/projects/{{id}}/formula"  class="see btn btn-outline-primary my-4">Liste Essais</a>
+          <a href="{{ path('app_projet_rapport', {'id': id }) }}" class="btn btn-outline-success my-4"> Rapport</a>
 
       {# Formulaire AJOUT FORMULE #}
         <div class="formBox">
@@ -27,19 +27,19 @@
         
           {{ form_row(form2.comment) }}
          <h5>Liste des Composants</h5>
-
-        <ul class="tags "
+          {# declarer du formulaire imbriqué #}
+        <ul class="materials "
             data-index="{{ form2.materialFormulas|length > 0 ? form2.materialFormulas|last.vars.name + 1 : 0 }}"
             data-prototype="{{ form_widget(form2.materialFormulas.vars.prototype)|e('html_attr') }}">
             
-                {% for materialFormula in form2.materialFormulas %}
+                {# {% for materialFormula in form2.materialFormulas %}
                     <li>{{ form_row(materialFormula.idMaterial) }}</li>
                     <li >{{ form_row(materialFormula.quantity) }}</li>
                     <li >{{ form_row(materialFormula.unit) }}</li>
-                {% endfor %}
+                {% endfor %} #}
             </ul>
-         <button type="button" class="btn btn-success btn-sm p-2 add_item_link" data-collection-holder-class="tags">
-          <img src="/img/plus.png" alt=""><span class="px-2">Ajouter</span>
+         <button type="button" class="btn btn-success btn-sm p-2 add_item_link" data-collection-holder-class="materials">
+                  <img src="/img/plus.png" alt=""><span class="px-2">Ajouter</span>
           </button>       
 
 
@@ -103,10 +103,36 @@
 
     </div>
 
+   {# MODAL DE CONFIRMATION SUPPRESSION #}
+        <div class="alert-modal">
+>         
+          <div class="overlay"></div>
+          <div class="item-modal">
+              <div class="modal-header">
+                <h5> Archiver le projet</h5>
+              </div>
+              
+              <div class="modal-body">
+                <p>Vous etes sur le point de d'archiver le projet entier.</p>
+                <p>Celui si sera accepcible depuis l'interface "ARCHIVE"</p>
+              </div>
+              
+              <div class="modal-footer">
+                <a href="{/}" class="btn btn-success btn-valid"><i class="fa-solid fa-check"></i>  Valider</a>
+                <button class="btn btn-danger btn-cancel"><i class="fa-solid fa-xmark"></i>  ANNULER</button>
+           
+              </div>
+          </div>
+        </div>
+
+
+
+
   {% block javascripts %}
 
+     
        <script src="{{ asset('/js/display.js') }}"></script>
-
+   
      
    {% endblock %}    
 

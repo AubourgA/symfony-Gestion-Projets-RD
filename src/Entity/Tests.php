@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
+use DateTimeZone;
 use DateTimeImmutable;
-use App\Repository\TestsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TestsRepository;
 
 #[ORM\Entity(repositoryClass: TestsRepository::class)]
 class Tests
@@ -34,7 +35,7 @@ class Tests
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable('now', new DateTimeZone('+0200'));
     }
 
     public function getId(): ?int

@@ -22,24 +22,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProjetsController extends AbstractController
 {
     #[Route('/projets', name: 'app_projets')]
-    public function index(ProjectsRepository $pr, 
-                          FormulasRepository $fr,
-                          ): Response
+    public function index(ProjectsRepository $pr): Response
     {
         // recuperer la liste des projet actif
         $projects = $pr->findBy( [
             'active' => 0,
         ]);
-
-        //reucpere le nombre de formule par projet
-        $NbFormulaPerProject = $fr->getNbFormulaByProjet(2);
-
-       
+ 
          /*recuepre la liste des project perso et visible public */
-         $user = $this->getUser()  ? $this->getUser()->getId() : null;
+         $user = $this->getUser()  ? $this->getUser() : null;
 
          $projectCustom = $pr->getCustomProject($user, 1);
-        /*VARAIBALE A INJECTER DANS LE TABLEAU projet index */
+      
        
 
         return $this->render('projets/index.html.twig', [
@@ -54,8 +48,6 @@ class ProjetsController extends AbstractController
                         ): Response
     {
         
-        
-
         $projects = new Projects();
         $form = $this->createForm(ProjectsType::class, $projects);
       
@@ -86,7 +78,6 @@ class ProjetsController extends AbstractController
                         EntityManagerInterface $em, 
                         ProjectsRepository $repo, 
                         FormulasRepository $fr,
-                        Projects $Project,
                         int $id ) : Response
     {
         //1 - Formulaire principal
@@ -94,6 +85,11 @@ class ProjetsController extends AbstractController
         //recuperer l'element dans la BDD en fonction de l'id passer en POST/GET
         $projects = $repo->findOneBy(['id'=> $id]);
        
+           //vERIFICATION DI L ID EXISTE
+           if(empty($projects)) {
+           
+            throw $this->createNotFoundException('La page n\'existe pas');
+        }
         
         //creer le formulaire en fonction des champs de du form
         $form = $this->createForm(ProjectsType::class, $projects);
@@ -153,8 +149,16 @@ class ProjetsController extends AbstractController
     public function desactive(EntityManagerInterface $em, ProjectsRepository $repo, int $id ):Response
     {
 
+
         //recuperer l'element dans la BDD en fonction de l'id passer en POST/GET
         $project = $repo->findOneBy(['id'=> $id]);
+
+        //vERIFICATION DI L ID EXISTE
+        if(empty($project)) {
+                
+            throw $this->createNotFoundException('La page n\'existe pas');
+        }
+        
         $project->setActive(1);
         $em->persist($project);
         $em->flush();

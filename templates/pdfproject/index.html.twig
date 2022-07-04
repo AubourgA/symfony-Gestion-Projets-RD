@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProjetPDFController!{% endblock %}
+
+{% block body %}
+<div class="container">
+
+<header class="">
+    <h1>GENERATION D UN RAPPORT DE PROJET</h1>
+</header>
+
+<main>
+    <h2>Element a inserer dans le rapport : </h2>
+
+        <section class="row">
+        
+            <form action="{{ path('app_pdf', {'id':id}) }}" method="post">
+           <input type="hidden" name="token" value="{{ csrf_token('generate-item') }}"/>
+            <table class="col-6 table table-hover">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Subject</th>
+                        <th>CreatedAt</th>
+                        <th>Inclure</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for formula in formulas %}
+                    <tr class="table-active">
+                        <td>{{ formula.id}}</td>
+                        <td>{{ formula.subject}}</td>
+                        <td>{{formula.CreatedAt|date('d/m/Y')}}</td>
+                        <td><input type="checkbox" name="formula[]" value={{formula.id}}></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {# <a href="{{ path('app_pdf' , {'id': id }) }}" class="cta btn btn-primary">EDITER LE RAPPORT</a> #}
+            <button class="cta btn btn-primary" type="submit">EDITER RAPPORT</button>
+            </form>
+        </section>
+
+
+</main>
+</div>
+{% endblock %}
+
+{# {% block javascripts %}
+    <script src="{{ asset('/js/rapport.js') }}"></script>
+{% endblock %} #}

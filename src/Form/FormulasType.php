@@ -42,6 +42,7 @@ class FormulasType extends AbstractType
             'entry_type' => MaterialFormulaType::class,
             'entry_options' => ['label'=> false],
             'allow_add' => true,
+            'allow_delete' => true,
             'prototype' => true,
             'by_reference' => false //permet d'aller chercher un add et non un set
                        ])
@@ -51,10 +52,7 @@ class FormulasType extends AbstractType
                 'class' => 'btn btn-primary mt-4'
             ],
             'label' => 'Enregistrer'
-        ])
-            
-
-        ;
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

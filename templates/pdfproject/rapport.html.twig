@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h1> RAPPORT </h1>
+    <h2> SUJET : {{ formulas[0].projects.subject}}</h2>
+    <h3> ecrit par : {{ app.user.fullname}}</h3>
+    <p>Créé le {{formulas[0].projects.createdAt |date('d/m/Y')}}</p>
+
+    {% for formula in formulas %}
+        <h4>Identification Formule:  {{formula.subject}}</h4>
+        <p> Formulé le : {{ formula.createdAt | date('d:m:Y à H:m:s')}}</p>
+
+        <section class="col-8 mt-5">
+            <h4>Formulation</h4>
+                    
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="table-warning">
+                            <th scope="col">Designation</th>
+                            <th scope="col">Quantite</th>
+                            <th scope="col">Unit</th>
+                            <th scope="col">Price €</th>
+                            <th scope="col">Unit</th>
+                            <th scope="col">€ / qtite</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for matForm in matForms %}
+
+                        <tr class="table-light">
+                            <th scope="row">{{ matForm.idmaterial.name}}</th>
+                            <td> {{ matForm.quantity}}</td>
+                            <td>{{ matForm.unit}}</td>
+                            <td> {{ matForm.idmaterial.price}}</td>
+                            <td> {{ matForm.idmaterial.unit}}</td>
+                            <td> {{ (matForm.idmaterial.price * matForm.quantity) / 1000 }}</td> 
+                                 
+                        </tr>
+                    {% endfor %}
+               
+                    </tbody>
+                    </table>
+                </section>
+        
+    {% endfor %}
+{% endblock %}

@@ -2,25 +2,28 @@
 
 namespace App\Controller;
 
+use App\Entity\Images;
+use App\Entity\Results;
+use App\Form\ImageType;
 use App\Entity\Comments;
 use App\Entity\Formulas;
-use App\Entity\Results;
-use App\Entity\MaterialFormula;
 use App\Form\ResultType;
-use App\Form\FormulasType;
 use App\Form\CommentType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use App\Repository\MaterialFormulaRepository;
+use App\Form\FormulasType;
+use App\Entity\MaterialFormula;
 use App\Repository\ResultsRepository;
 use App\Repository\CommentsRepository;
 use App\Repository\FormulasRepository;
-use Knp\Component\Pager\PaginatorInterface;
+use App\Repository\ImagesRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
+use App\Repository\MaterialFormulaRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
-
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class FormulaController extends AbstractController
 {
@@ -43,8 +46,8 @@ class FormulaController extends AbstractController
     #[Route('/formulas/edit/{id}', name: 'app_edit_formula')]
     public function edit(Formulas $f,
                         Request $request,
-                        FormulasRepository $frepo, 
                         EntityManagerInterface $em,
+                        ImagesRepository $repoImg,
                         ResultsRepository $resrepo, 
                         CommentsRepository $comrepo,
                         MaterialFormulaRepository $repoMF,
@@ -90,7 +93,40 @@ class FormulaController extends AbstractController
         $getResults = $resrepo->findBy( ['formula' => $id]);
 
         //parie AJOUT IMAGE
-   
+        $imageForm = $this->createForm(ImageType::class);
+        $imageForm->handleRequest($request);
+        if($imageForm->isSubmitted() && $imageForm->isValid()) {
+            //on recupere les image tansmise
+            $images = $imageForm->get('image')->getData();
+         
+            //onboucle sur lesimages
+            foreach($images as $image) {
+                //on genere nouveau nom de fichier
+                $fichier = md5(uniqid()) . '.' . $image->guessExtension();
+                //on copie le ficher dans le ddossier uploads
+                $image->move(
+                    $this->getParameter('images_directory'),
+                    $fichier
+                );
+
+                //on stocke image dans la base de donnée (le nom);
+                $img = new Images();
+                $img->setName($fichier);
+                $f->addImage($img);
+
+            }
+            $em->persist($img);
+            $em->flush();
+            $this->addFlash(
+                'success',
+                'Your images was added with successfully !'
+            );
+         
+        }
+
+        //PARTIE IMAGES
+        $allImages = $repoImg->findBy(['formula'=> $id]);
+
 
 
         //PARTIE COMMENTAIRE
@@ -124,7 +160,11 @@ class FormulaController extends AbstractController
             'formRes' => $formRes->createView(),
             "getResults" => $getResults,
             'formComment' => $formComment->createView(),
+            'imageForm' => $imageForm->createView(),
+            'listeImage' => $allImages
            
         ]);
     }
+
+   
 }

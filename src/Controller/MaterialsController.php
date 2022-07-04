@@ -72,8 +72,16 @@ class MaterialsController extends AbstractController
     #[Route('/materials/edit/{id}', name: 'app_edit_materials', methods : ['GET','POST'])]
     public function edit(Request $request, EntityManagerInterface $em, MaterialsRepository $repo, int $id ) : Response
     {
+
+
         //recuperer l'element dans la BDD en fonction de l'id passer en POST/GET
         $materials = $repo->findOneBy(['id'=> $id]);
+
+        //vERIFICATION DI L ID EXISTE
+        if(empty($materials)) {
+           
+            throw $this->createNotFoundException('La page n\'existe pas');
+        }
        
         //creer le formulaire en fonction des champs de du form
         $form = $this->createForm(MaterialsType::class, $materials);

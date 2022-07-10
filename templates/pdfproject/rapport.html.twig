@@ -13,6 +13,8 @@
     </header>
 
     {% for formula in formulas %}
+ 
+
         <div class="block--color">
             <h4>Id :  {{formula.subject}}</h4>
             <p> Lancé le : {{ formula.createdAt | date('d:m:Y à H:m:s')}}</p>
@@ -21,7 +23,8 @@
 
         <div class="block">
             <h4>Protocole</h4>
-            <p>{{formula.commentaires|default("aucun")}}</p>
+        
+            <p>{{formula.comment}}</p>
         </div>
 
         <section>
@@ -40,19 +43,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {% for matForm in matForms %}
-
-                        <tr class="table-light">
-                            <th scope="row">{{ matForm.idmaterial.name}}</th>
-                            <td> {{ matForm.quantity}}</td>
-                            <td>{{ matForm.unit}}</td>
-                            <td> {{ matForm.idmaterial.price}}</td>
-                            <td> {{ matForm.idmaterial.unit}}</td>
-                            <td> {{ (matForm.idmaterial.price * matForm.quantity) / 1000 }}</td> 
-                                 
-                        </tr>
-                    {% endfor %}
-               
+                        {% for matForm in matForms %}
+                            {% if formula.id is same as(matForm.idformula.id) %}
+                           
+                                <tr class="table-light">
+                                    <th scope="row">{{ matForm.idmaterial.name}}</th>
+                                    <td> {{ matForm.quantity}}</td>
+                                    <td>{{ matForm.unit}}</td>
+                                    <td> {{ matForm.idmaterial.price}}</td>
+                                    <td> {{ matForm.idmaterial.unit}}</td>
+                                    <td> {{ (matForm.idmaterial.price * matForm.quantity) / 1000 }}</td>                
+                                </tr>
+                           {% endif %}
+                        {% endfor %}
                     </tbody>
                     </table>
 
@@ -72,16 +75,16 @@
                                 </thead>
                                 <tbody>
                                 {% for getResult in getResults %}
-
+                                     {% if formula.id is same as(getResult.formula.id) %}
                                     <tr class="table-light">
                                             <th scope="row">{{ getResult.id}}</th>
                                             <td> {{ getResult.tests}}</td>
                                             <td>{{ getResult.tests.pres}}</td>
                                             <td>{{ getResult.tests.duedate}}</td>
                                             <td> {{ getResult.value}}</td>
-                                            <td> {{ getResult.tests.unit}}</td>
-                                            
+                                            <td> {{ getResult.tests.unit}}</td> 
                                     </tr>
+                                    {% endif %}
                                 {% endfor %}
                                 </tbody>
                          </table>
@@ -90,9 +93,13 @@
 
                 <section>
                 <h4>Interpretation / Commentaires</h4>
-                <textarea>
-                    {{comments.commentaires}}
-                </textarea>
+                <p>
+                {% for comment in comments %}
+                  {% if formula.id is same as comment.formula.id %}
+                     {{comment.commentaires}}
+                   {% endif %}
+                {% endfor %}
+                </p>
                 </section>
         
     {% endfor %}

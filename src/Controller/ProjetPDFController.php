@@ -58,9 +58,10 @@ class ProjetPDFController extends AbstractController
             //recupereation des resultat de la requette du choix
             $allFormula = $forRepo->findById($request->get('formula'));
              $composition = $matForm->findBy(['idformula' => $request->get('formula')]);
+      
              $getResults = $resRepo->findBy( ['formula' => $request->get('formula')]);
-             $comments = $respoComment->findOneBy(['formula' => $request->get('formula')]);
-
+             $comments = $respoComment->findBy(['formula' => $request->get('formula')]);
+          
              //on defini les option du PDF
              $pdfOptions = new Options();
              //police par défaut

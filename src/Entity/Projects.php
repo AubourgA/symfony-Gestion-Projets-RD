@@ -65,7 +65,7 @@ class Projects
     #[ORM\PreUpdate]
     public function setUpdatedAtValue()
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt =new \DateTimeImmutable('now', new DateTimeZone('+0200'));
     }
 
 

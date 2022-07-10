@@ -6,8 +6,10 @@ use Dompdf\Dompdf;
 
 use Dompdf\Options;
 use App\Entity\Formulas;
+use App\Repository\CommentsRepository;
 use App\Repository\FormulasRepository;
 use App\Repository\MaterialFormulaRepository;
+use App\Repository\ResultsRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -43,6 +45,8 @@ class ProjetPDFController extends AbstractController
     public function generatePDF(int $id, 
                                 FormulasRepository $forRepo, 
                                 MaterialFormulaRepository $matForm,
+                                ResultsRepository $resRepo,
+                                CommentsRepository $respoComment,
                                 Request $request)
     {
         //recupereation du token du formulaire
@@ -54,15 +58,19 @@ class ProjetPDFController extends AbstractController
             //recupereation des resultat de la requette du choix
             $allFormula = $forRepo->findById($request->get('formula'));
              $composition = $matForm->findBy(['idformula' => $request->get('formula')]);
-     
+             $getResults = $resRepo->findBy( ['formula' => $request->get('formula')]);
+             $comments = $respoComment->findOneBy(['formula' => $request->get('formula')]);
+
              //on defini les option du PDF
              $pdfOptions = new Options();
              //police par défaut
              $pdfOptions->set('DefaultFont', 'Arial');
              $pdfOptions->setIsRemoteEnabled(true);
+             $pdfOptions->set('isRemoteEnabled', true);
      
              //on instance dompdf
              $dompdf = new Dompdf($pdfOptions);
+            
              $context = stream_context_create([
                  'ssl' => [
                      'verify_peer' => FALSE,
@@ -71,13 +79,16 @@ class ProjetPDFController extends AbstractController
                  ]
              ]);
              $dompdf->setHttpContext($context);
-          
+           
              //on genere le HTML
              $html = $this->renderView('pdfproject/rapport.html.twig', [
                  'formulas' => $allFormula,
                  'matForms' => $composition,
+                 'getResults' => $getResults,
+                 'comments' => $comments,
                  'id' => $id
              ]);
+          
      
              $dompdf->loadHtml($html);
              $dompdf->setPaper('A4', 'portrait');

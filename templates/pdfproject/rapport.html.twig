@@ -1,22 +1,35 @@
-{% extends 'base.html.twig' %}
+{% extends '/pdfproject/pdf-base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{absolute_url(asset('css/pdf.css')) }}">
+{% endblock %}
 
 {% block body %}
-
-    <h1> RAPPORT </h1>
-    <h2> SUJET : {{ formulas[0].projects.subject}}</h2>
-    <h3> ecrit par : {{ app.user.fullname}}</h3>
-    <p>Créé le {{formulas[0].projects.createdAt |date('d/m/Y')}}</p>
+    <header class="header">
+        <h2> RAPPORT </h2>
+        <h1> PROJET : {{ formulas[0].projects.subject}}</h1>
+        <h3> De : {{ app.user.fullname}}</h3>
+        <p class="block-text--small">Initié le {{formulas[0].projects.createdAt |date('d/m/Y')}}</p>
+    </header>
 
     {% for formula in formulas %}
-        <h4>Identification Formule:  {{formula.subject}}</h4>
-        <p> Formulé le : {{ formula.createdAt | date('d:m:Y à H:m:s')}}</p>
+        <div class="block--color">
+            <h4>Id :  {{formula.subject}}</h4>
+            <p> Lancé le : {{ formula.createdAt | date('d:m:Y à H:m:s')}}</p>
+            <p>Prix au Kg : </p>
+        </div>
 
-        <section class="col-8 mt-5">
+        <div class="block">
+            <h4>Protocole</h4>
+            <p>{{formula.commentaires|default("aucun")}}</p>
+        </div>
+
+        <section>
             <h4>Formulation</h4>
                     
                 <table class="table table-hover">
                     <thead>
-                        <tr class="table-warning">
+                        <tr class="header-line--blue">
                             <th scope="col">Designation</th>
                             <th scope="col">Quantite</th>
                             <th scope="col">Unit</th>
@@ -42,6 +55,44 @@
                
                     </tbody>
                     </table>
+
+                    <div class="block-result" >
+                        <h4>Résultats</h4>
+                          <table class="table table-hover">
+                                <thead>
+                                    <tr class="header-line--green">
+                                        <th scope="col">id</th>
+                                        <th scope="col">Critere</th>
+                                        <th scope="col">Presision</th>
+                                        <th scope="col">echeance/timing</th>
+                                        <th scope="col">Valeur</th>
+                                        <th scope="col">Unit</th>
+                                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for getResult in getResults %}
+
+                                    <tr class="table-light">
+                                            <th scope="row">{{ getResult.id}}</th>
+                                            <td> {{ getResult.tests}}</td>
+                                            <td>{{ getResult.tests.pres}}</td>
+                                            <td>{{ getResult.tests.duedate}}</td>
+                                            <td> {{ getResult.value}}</td>
+                                            <td> {{ getResult.tests.unit}}</td>
+                                            
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                         </table>
+                    </div>
+                </section>
+
+                <section>
+                <h4>Interpretation / Commentaires</h4>
+                <textarea>
+                    {{comments.commentaires}}
+                </textarea>
                 </section>
         
     {% endfor %}

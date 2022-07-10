@@ -77,7 +77,7 @@ class MaterialsController extends AbstractController
         //recuperer l'element dans la BDD en fonction de l'id passer en POST/GET
         $materials = $repo->findOneBy(['id'=> $id]);
 
-        //vERIFICATION DI L ID EXISTE
+        //vERIFICATION SI L ID EXISTE
         if(empty($materials)) {
            
             throw $this->createNotFoundException('La page n\'existe pas');

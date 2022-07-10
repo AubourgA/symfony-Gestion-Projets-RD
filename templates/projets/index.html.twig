@@ -55,7 +55,7 @@
                     <td>{{project.subject}}</td>
                     <td>{{project.testingNumber}}</td>
                     <td>{{project.createdAt | date('d-m-Y')}}</td>
-                    <td>{{project.updatedAt | date('d-m-Y' )}}</td>
+                    <td>{{project.updatedAt | date('d-m-Y à H:i:s' )}}</td>
                     <td>{{project.timeForcast }}</td>
                      <td>{{project.status }}</td>
                       <td>{{project.user.fullname }}</td>
@@ -77,8 +77,8 @@
                         <th scope="row">{{projectCustom.id}}</th>
                           <td>{{projectCustom.subject}}</td>
                           <td>{{projectCustom.testingNumber}}</td>
-                          <td>{{projectCustom.createdAt | date('d-m-Y')}}</td>
-                          <td>{{projectCustom.updatedAt | date('d-m-Y' )}}</td>
+                          <td>{{projectCustom.createdAt | date('d-m-Y' )}}</td>
+                          <td>{{projectCustom.updatedAt | date("d-m-Y à H:i:s") }}</td>
                           <td>{{projectCustom.timeForcast }}</td>
                           <td>{{projectCustom.status }}</td>
                             <td>{{projectCustom.user.fullname }}</td>
